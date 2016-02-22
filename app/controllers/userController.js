@@ -39,33 +39,25 @@ exports.signup = function(req, res) {
     // For security measurement we remove the roles from the req.body object
     delete req.body.roles;
 
-    var user = new User(req.body);
+    var newUser = new User(req.body);
     var message = null;
 
     // Add missing user fields
-    user.provider = 'local';
-    user.displayName = user.firstName + ' ' + user.lastName;
-    user.token = tokenGenerator(user.username);
+    newUser.provider = 'local';
+    newUser.displayName = newUser.firstName + ' ' + newUser.lastName;
+    newUser.token = tokenGenerator(newUser.username);
 
     // Then save the user
-    user.save(function(err) {
+    newUser.save(function(err, user) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
             });
-        } else {
-            // Remove sensitive data before login
-            user.password = undefined;
-            user.salt = undefined;
-
-            req.login(user, function(err) {
-                if (err) {
-                    res.status(400).send(err);
-                } else {
-                    res.json(user);
-                }
-            });
         }
+        user.password = undefined;
+        user.salt = undefined;
+
+        return res.status(200).send(user);
     });
 };
 
@@ -104,8 +96,7 @@ exports.signin = function(req, res, next) {
  * Signout
  */
 exports.signout = function(req, res) {
-    req.logout();
-    res.redirect('/');
+    res.redirect('/'); // just redirect because I assume reset token from client side
 };
 
 /**
