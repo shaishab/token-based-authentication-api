@@ -4,9 +4,13 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose'),
+    serverConfig = require('./config/serverConfig'),
+    passport =  require('passport');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
+mongoose.connect(serverConfig.config.dbUrl);
+
+var routes = require('./router');
 
 var app = express();
 
@@ -21,15 +25,39 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(passport.initialize());
 
+/**
+ * Bootstrap passport config
+ */
+require('./config/passportConfig')();
+
+/**
+ *  Initialize route
+ */
 app.use('/', routes);
-app.use('/users', users);
+
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+app.use(function(err, req, res, next) {
+  // If the error object doesn't exists
+  if (!err) return next();
+
+  // Log it
+  console.error(err.stack);
+
+  // Error page
+  res.status(500).send({
+    error: err.stack
+  });
+});
+
+// Assume 404 since no middleware responded
+app.use(function(req, res) {
+  res.status(404).send({
+    url: req.originalUrl,
+    error: 'Not Found'
+  });
 });
 
 // error handlers
