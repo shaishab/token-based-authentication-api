@@ -11,7 +11,7 @@ var userController = require('../controllers/userController'),
     authentication = require('../helpers/authenticationHelper');
 
 module.exports = function(router) {
-    router.route('/user')
+    router.route('/user/me')
         .get(authentication.bearerAuthentication, userController.getUserInfo);
 
     router.route('/signup')

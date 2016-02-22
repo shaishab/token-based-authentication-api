@@ -23,7 +23,7 @@ var _ = require('lodash'),
  */
 
 var tokenGenerator = function(username) {
-    var expires = moment().add(serverConfig.config.tokenLifeTime, 'seconds').valueOf();
+    var expires = moment().add(serverConfig.config.tokenLifeTime, 'seconds').valueOf(); // Token lifetime set 5 mins (300 seconds)
     var token = jwt.encode({
         username: username,
         expire: expires
@@ -33,7 +33,7 @@ var tokenGenerator = function(username) {
 };
 
 /**
- * Signup
+ * Signup function
  */
 exports.signup = function(req, res) {
     // For security measurement we remove the roles from the req.body object
@@ -62,7 +62,7 @@ exports.signup = function(req, res) {
 };
 
 /**
- * Signin
+ * Signin function
  */
 exports.signin = function(req, res, next) {
     User.findOne({username: req.body.username}, function(error, user) {
@@ -93,7 +93,7 @@ exports.signin = function(req, res, next) {
 };
 
 /**
- * Signout
+ * Signout function
  */
 exports.signout = function(req, res) {
     res.redirect('/'); // just redirect because I assume reset token from client side
@@ -104,6 +104,5 @@ exports.signout = function(req, res) {
  */
 
 exports.getUserInfo = function(req, res) {
-    console.log('get user info', req);
-    return res.status(200).send({status:'ok',message:'Yes you hit the user route'});
+    return res.status(200).send({status:'ok',message:'Yes you hit my profile', user: {firstName: "Shaishab", lastName: "Roy"}});
 };
