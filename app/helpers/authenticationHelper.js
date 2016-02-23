@@ -19,6 +19,9 @@ exports.bearerAuthentication = function(req, res, next){
         if (err) {
             return res.status(400).send({message: errorHandler.getErrorMessage(err)});
         }
+        if(!user) {
+            return res.status(400).send({message: 'Unauthorized'});
+        }
 
         return next();
 
