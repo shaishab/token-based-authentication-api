@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "./node_modules/.bin/mocha test --recursive || true"
   },
   "dependencies": {
     "body-parser": "~1.13.2",
@@ -19,5 +20,9 @@
     "passport": "^0.3.2",
     "passport-http-bearer": "^1.0.1",
     "serve-favicon": "~2.3.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.4.5",
+    "supertest": "^1.2.0"
   }
 }
