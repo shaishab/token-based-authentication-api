@@ -28,7 +28,7 @@ var tokenGenerator = function(username) {
 };
 
 
-describe('User', function() {
+describe('Create new user', function() {
 
     //beforeEach(function(done) {
     //    if (mongoose.connection.db) return done();
@@ -54,17 +54,27 @@ describe('User', function() {
     });
 });
 
-describe('GET /user/me', function() {
-    var token = '';
-    before(function(done) {
-        User.findOne({username: 'shaishabr'}, function(err, user) {
-            if(err || !user) { return done(err);}
-            token = user.token;
-            done();
-        })
-    });
+var token = '';
 
-    it('should return single user info', function(done) {
+describe('Sign in for given user', function() {
+
+    it('should return user after signin', function(done) {
+        request(app)
+            .post('/signin')
+            .send({ username: 'shaishabr', password: 'shaishab' })
+            .expect(200)
+            .end(function(err, res){
+                if (err) return done(err);
+                if (!res && !res.body) return done({message: 'user not found'});
+                token = res.body.token;
+                done();
+            });
+    });
+});
+
+describe('Get signed in user information', function() {
+
+    it('should return signed in user info', function(done) {
         request(app)
             .get('/user/me')
             .set('Accept', 'application/json')
