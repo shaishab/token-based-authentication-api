@@ -22,7 +22,6 @@ var validateLocalStrategyProperty = function(property) {
  * A Validation function for local strategy password
  */
 var validateLocalStrategyPassword = function(password) {
-    console.log(password);
     return (this.provider !== 'local' || (password && password.length > 6));
 };
 
